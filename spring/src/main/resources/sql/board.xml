@@ -10,4 +10,34 @@
 							#{passwd},#{subject},#{content},0,sysdate)
 	</insert>
 	
+	<!-- 총 데이터 갯수 -->
+	<select id="count" resultType="int">
+		select count(*) from myboard
+	</select>
+	
+	<!-- 글 목록 -->
+	<select id="list" parameterType="int" resultType="board">
+
+<!--
+ 		select * from (select rownum rnum, board.* from
+		 (select * from myboard order by no desc) board) 
+		where rnum &gt;= ((#{page}-1) * 10 + 1) and rnum &lt;= (#{page} * 10)
+ -->
+		<![CDATA[
+		select * from (select rownum rnum, board.* from
+		 (select * from myboard order by no desc) board) 
+		where rnum >= ((#{page}-1) * 10 + 1) and rnum <= (#{page} * 10)
+		]]> 
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="hit" parameterType="int">
+		update myboard set readcount=readcount+1 where no=#{no}
+	</update>
+	
+	<!--  -->
+	<select id="content" parameterType="int" resultType="board">
+		select * from myboard where no=#{no}
+	</select>
+	
 </mapper>
